@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interactable.h"
-#include "ItemPopupBase.h"
 #include "WeaponRarity.h"
 #include "WeaponState.h"
 #include "GameFramework/Actor.h"
+#include "InteractionSystem/Interactable.h"
 #include "WeaponBase.generated.h"
 
+class UItemPopupBase;
 class USoundCue;
 class UWidgetComponent;
 class USphereComponent;

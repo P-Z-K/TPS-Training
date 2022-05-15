@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TPPPlayerController.h"
+#include "Core/Player/TPPPlayerController.h"
 
-#include "TPPPlayerCameraManager.h"
+#include "Core/Player/TPPPlayerCameraManager.h"
 
 ATPPPlayerController::ATPPPlayerController()
 {

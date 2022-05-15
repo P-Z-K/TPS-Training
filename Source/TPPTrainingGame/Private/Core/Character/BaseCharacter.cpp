@@ -1,18 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BaseCharacter.h"
+#include "Core/Player/BaseCharacter.h"
 
-#include "HUDBase.h"
-#include "InteractionComponent.h"
-#include "TPPMovementComponent.h"
-#include "WeaponBase.h"
 #include "Camera/CameraComponent.h"
+#include "Core/Player/TPPMovementComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "InteractionSystem/InteractionComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "UI/HUDBase.h"
+#include "Weapon/WeaponBase.h"
+#include "Weapon/WeaponState.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UTPPMovementComponent>(CharacterMovementComponentName))

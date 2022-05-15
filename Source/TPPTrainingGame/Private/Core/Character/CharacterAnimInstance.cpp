@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CharacterAnimInstance.h"
+#include "Core/Player/CharacterAnimInstance.h"
 
-#include "BaseCharacter.h"
-#include "WeaponBase.h"
+#include "Core/Player/BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Weapon/WeaponBase.h"
 
 
 void UCharacterAnimInstance::NativeInitializeAnimation()

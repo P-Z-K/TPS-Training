@@ -1,15 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponBase.h"
+#include "Weapon/WeaponBase.h"
 
-#include "BaseCharacter.h"
 #include "CustomChannels.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Core/Player/BaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
+#include "UI/ItemPopupBase.h"
 
 AWeaponBase::AWeaponBase()
 {

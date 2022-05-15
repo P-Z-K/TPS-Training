@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TPPMovementComponent.h"
+#include "Core/Player/TPPMovementComponent.h"
+#include "Core/Player/BaseCharacter.h"
 
-#include "BaseCharacter.h"
 
 float UTPPMovementComponent::GetMaxSpeed() const
 {

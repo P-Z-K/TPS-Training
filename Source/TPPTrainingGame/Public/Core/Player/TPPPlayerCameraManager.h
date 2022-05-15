@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseCharacter.h"
 #include "Camera/PlayerCameraManager.h"
-#include "Components/TimelineComponent.h"
 #include "TPPPlayerCameraManager.generated.h"
 
 /**

@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "InteractionComponent.h"
+#include "InteractionSystem/InteractionComponent.h"
 
 #include "CustomChannels.h"
 #include "DrawDebugHelpers.h"
-#include "Interactable.h"
+#include "Core/Player/BaseCharacter.h"
 
 UInteractionComponent::UInteractionComponent()
 {
