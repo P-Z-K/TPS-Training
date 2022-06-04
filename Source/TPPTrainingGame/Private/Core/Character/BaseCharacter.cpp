@@ -14,6 +14,7 @@
 #include "UI/HUDBase.h"
 #include "Weapon/WeaponBase.h"
 #include "Weapon/WeaponState.h"
+#include "Engine/EngineTypes.h"
 
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UTPPMovementComponent>(CharacterMovementComponentName))
@@ -244,9 +245,9 @@ void ABaseCharacter::EquipWeapon(AWeaponBase* WeaponToEquip)
 	EquippedWeaponInstance->SetCharacterThatHolds(this);
 	EquippedWeaponInstance->SetState(EWeaponState::Equipped);
 
-	auto RightHandSocket = GetMesh()->GetSocketByName(WeaponSocketName);
-	RightHandSocket->AttachActor(EquippedWeaponInstance, GetMesh());
-	WeaponToEquip->SetActorScale3D(FVector::One());
+	FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget,
+	                                EAttachmentRule::SnapToTarget, true);
+	EquippedWeaponInstance->AttachToComponent(GetMesh(), Rules, WeaponSocketName);
 }
 
 void ABaseCharacter::FireWeapon()
@@ -268,4 +269,3 @@ void ABaseCharacter::SpawnDefaultWeapon()
 	auto SpawnedWeapon = GetWorld()->SpawnActor<AWeaponBase>(DefaultEquippedWeapon);
 	EquipWeapon(SpawnedWeapon);
 }
-
