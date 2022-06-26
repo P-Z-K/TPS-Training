@@ -38,7 +38,6 @@ public:
 protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
-	virtual void PostInitializeComponents() override;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);

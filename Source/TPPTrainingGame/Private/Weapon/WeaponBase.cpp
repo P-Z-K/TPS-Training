@@ -4,6 +4,9 @@
 #include "Weapon/WeaponBase.h"
 
 #include "CustomChannels.h"
+#include "WeaponEquippedState.h"
+#include "WeaponFallingState.h"
+#include "WeaponPickupState.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Core/Player/BaseCharacter.h"
@@ -30,18 +33,10 @@ AWeaponBase::AWeaponBase()
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-	Widget->SetVisibility(false);
+	Widget->SetVisibility(true);
 	Popup = Cast<UItemPopupBase>(Widget->GetWidget());
-	Popup->SetAmmoType(AmmoType);
-	Popup->SetAmmoAmount(AmmoAmount);
-	Popup->SetStarsCount(GetStarsCount());
-	Popup->SetWeaponName(Name);
-}
+	Popup->Setup(Name, AmmoAmount, AmmoType, GetStarsCount());
 
-void AWeaponBase::PostInitializeComponents()
-{
-
-	Super::PostInitializeComponents();
 	SetState(State);
 }
 
@@ -60,30 +55,35 @@ int AWeaponBase::GetStarsCount()
 
 void AWeaponBase::OnCursorHoverStart()
 {
-	Widget->SetVisibility(true);
+	if (CurrentState)
+	{
+		CurrentState->OnCursorHoverStart();
+	}
 }
 
 void AWeaponBase::OnCursorHoverEnded()
 {
-	Widget->SetVisibility(false);
+	if (CurrentState)
+	{
+		CurrentState->OnCursorHoverEnded();
+	}
 }
 
 void AWeaponBase::OnClicked(ABaseCharacter* Character)
 {
-	if (!Character)
+	if (CurrentState)
 	{
-		return;
+		CurrentState->OnClicked(Character);
 	}
-	Character->EquipWeapon(this);
 }
 
 void AWeaponBase::Fire()
 {
-	if (bShouldFire)
+	if (bCanFire)
 	{
 		FireBullet();
 		GetWorldTimerManager().SetTimer(FiringDelayTimerHandle, this, &AWeaponBase::OnDelayEnded, FiringRate);
-		bShouldFire = false;
+		bCanFire = false;
 	}
 }
 
@@ -113,7 +113,7 @@ void AWeaponBase::OnDelayEnded()
 		return;
 	}
 
-	bShouldFire = true;
+	bCanFire = true;
 	if (CharacterThatHolds->GetIsFireButtonPressed())
 	{
 		Fire();
@@ -211,78 +211,25 @@ void AWeaponBase::ShowParticles(const FVector& HitLocation, const FTransform& Tr
 
 void AWeaponBase::SetState(EWeaponState NewState)
 {
+	if (CurrentState)
+	{
+		CurrentState->OnDeinit();
+		CurrentState->ConditionalBeginDestroy();
+	}
+	
 	State = NewState;
 	switch (State)
 	{
-	case EWeaponState::Pickup: OnPickupState(); break;
-	case EWeaponState::EquipInterping: OnEquipInterping(); break;;
-	case EWeaponState::PickedUp: OnPickedUpState(); break;
-	case EWeaponState::Equipped: OnEquippedState(); break;
-	case EWeaponState::Falling: OnFalling(); break;
-	default: ;
+	case EWeaponState::Pickup: CurrentState = NewObject<UWeaponPickupState>(); break;
+	//case EWeaponState::EquipInterping: OnEquipInterping(); break;;
+	//case EWeaponState::PickedUp: OnPickedUpState(); break;
+	case EWeaponState::Equipped: CurrentState = NewObject<UWeaponEquippedState>(); break;
+	case EWeaponState::Falling: CurrentState = NewObject<UWeaponFallingState>(); break;
+	default: CurrentState = nullptr;
 	}
-}
 
-void AWeaponBase::OnPickupState()
-{
-	SkeletalMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	SkeletalMesh->SetCollisionResponseToAllChannels(ECR_Block);
-	SkeletalMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	SkeletalMesh->SetSimulatePhysics(true);
-	SkeletalMesh->SetEnableGravity(true);
-	SkeletalMesh->BodyInstance.bLockXRotation = true;
-	SkeletalMesh->BodyInstance.bLockYRotation = true;
-	SkeletalMesh->BodyInstance.bLockZRotation = true;
-
-	CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CollisionSphere->SetCollisionResponseToAllChannels(ECR_Overlap);
-	CollisionSphere->SetCollisionResponseToChannel(ECC_Interactable, ECR_Block);
-
-	CollisionSphere->SetSimulatePhysics(false);
-	CollisionSphere->SetActive(true);
-	CollisionSphere->SetVisibility(false);
-
-	Widget->SetHiddenInGame(false);
-}
-
-void AWeaponBase::OnEquippedState()
-{
-	SkeletalMesh->BodyInstance.bLockXRotation = false;
-	SkeletalMesh->BodyInstance.bLockYRotation = false;
-	SkeletalMesh->BodyInstance.bLockZRotation = false;
-	SkeletalMesh->SetSimulatePhysics(false);
-	SkeletalMesh->SetEnableGravity(false);
-	SkeletalMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SkeletalMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
-
-	CollisionSphere->SetActive(false);
-	CollisionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CollisionSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-	
-	Widget->SetHiddenInGame(true);
-}
-
-void AWeaponBase::OnPickedUpState()
-{
-}
-
-void AWeaponBase::OnEquipInterping()
-{
-}
-
-void AWeaponBase::OnFalling()
-{
-	SkeletalMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	SkeletalMesh->SetCollisionResponseToAllChannels(ECR_Block);
-	SkeletalMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	SkeletalMesh->SetCollisionResponseToChannel(ECC_Interactable, ECR_Ignore);
-	SkeletalMesh->BodyInstance.bLockXRotation = true;
-	SkeletalMesh->BodyInstance.bLockYRotation = true;
-	SkeletalMesh->BodyInstance.bLockZRotation = true;
-	SkeletalMesh->SetSimulatePhysics(true);
-	SkeletalMesh->SetEnableGravity(true);
-	
-
-	CollisionSphere->SetActive(false);
-	CollisionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (CurrentState)
+	{
+		CurrentState->OnInit(this, GetWorld());
+	}
 }

@@ -17,10 +17,7 @@ class TPPTRAININGGAME_API UItemPopupBase : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void SetWeaponName(const FText& Text);
-	void SetAmmoAmount(int Amount);
-	void SetAmmoType(UTexture2D* Texture);
-	void SetStarsCount(int Count);
+	void Setup(const FText& Text, int AmmoAmount, UTexture2D* Texture, int StarsCount);
 
 protected:
 	virtual void NativeConstruct() override;
@@ -30,15 +27,15 @@ protected:
 	TArray<UImage*> Stars;
 
 	int StarsToDisplay;
-	
-	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
-	UTextBlock* WeaponName;
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
-	UTextBlock* AmmoAmount;
+	UTextBlock* WeaponNameText;
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
-	UImage* AmmoType;
+	UTextBlock* AmmoAmountText;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	UImage* AmmoTypeImage;
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	UImage* StarIcon1;

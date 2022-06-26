@@ -71,11 +71,6 @@ void ABaseCharacter::BeginPlay()
 	SpawnDefaultWeapon();
 }
 
-void ABaseCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-}
-
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

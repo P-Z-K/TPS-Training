@@ -19,34 +19,22 @@ void UItemPopupBase::NativePreConstruct()
 	Stars.Add(StarIcon3);
 	Stars.Add(StarIcon4);
 	Stars.Add(StarIcon5);
-	
-	for(const auto& Star : Stars)
+
+	for (const auto& Star : Stars)
 	{
 		Star->SetVisibility(ESlateVisibility::Hidden);
 	}
 
-	for(int i=0; i < StarsToDisplay; ++i)
+	for (int i = 0; i < StarsToDisplay; ++i)
 	{
 		Stars[i]->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
-void UItemPopupBase::SetWeaponName(const FText& Text)
+void UItemPopupBase::Setup(const FText& Text, int AmmoAmount, UTexture2D* Texture, int StarsCount)
 {
-	WeaponName->SetText(Text);
-}
-
-void UItemPopupBase::SetAmmoAmount(int Amount)
-{
-	AmmoAmount->SetText(FText::AsNumber(Amount));
-}
-
-void UItemPopupBase::SetAmmoType(UTexture2D* Texture)
-{
-	AmmoType->SetBrushFromTexture(Texture);
-}
-
-void UItemPopupBase::SetStarsCount(int Count)
-{
-	StarsToDisplay = Count;
+	WeaponNameText->SetText(Text);
+	this->AmmoAmountText->SetText(FText::AsNumber(AmmoAmount));
+	AmmoTypeImage->SetBrushFromTexture(Texture);
+	StarsToDisplay = StarsCount;
 }

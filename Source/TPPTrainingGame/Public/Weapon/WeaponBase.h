@@ -13,6 +13,8 @@ class UItemPopupBase;
 class USoundCue;
 class UWidgetComponent;
 class USphereComponent;
+class UWeaponStateBase;
+
 UCLASS()
 class TPPTRAININGGAME_API AWeaponBase : public AActor, public IInteractable
 {
@@ -34,26 +36,23 @@ public:
 	void SetState(EWeaponState NewState);
 
 	FORCEINLINE USkeletalMeshComponent* GetMesh() const {return SkeletalMesh;}
+	FORCEINLINE UWidgetComponent* GetWidget() const {return Widget;}
+	FORCEINLINE USphereComponent* GetCollisionSphere() const {return CollisionSphere;}
 	FORCEINLINE void SetCharacterThatHolds(ABaseCharacter* Character) {CharacterThatHolds = Character;}
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void PostInitializeComponents() override;
 
 	void FireBullet();
 	void OnDelayEnded();
 	int GetStarsCount();
 
-	void OnPickupState();
-	void OnEquippedState();
-	void OnPickedUpState();
-	void OnEquipInterping();
-	void OnFalling();
+	UPROPERTY()
+	UWeaponStateBase* CurrentState;
 
 
 	FTimerHandle FiringDelayTimerHandle;
-	bool bShouldFire = true;
-	
+	bool bCanFire = true;
 
 	UPROPERTY()
 	ABaseCharacter* CharacterThatHolds = nullptr;
